@@ -1,7 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"os"
+
+	"github.com/joho/godotenv"
+)
+
+type config struct {
+	accessKey string
+}
+
+type application struct {
+	cfg *config
+}
 
 func main() {
-	fmt.Print("Hey!")
+	godotenv.Load()
+
+	cfg := &config{
+		accessKey: os.Getenv("API_KEY"),
+	}
+
+	app := &application{
+		cfg: cfg,
+	}
+
+	// app.LastYearAverage("AAPL", "GBP")
+	app.SimulateDiceRolls(10000)
+
 }
