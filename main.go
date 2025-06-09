@@ -31,7 +31,7 @@ func main() {
 		cfg: cfg,
 	}
 
-	// app.LastYearAverage("AAPL", "GBP")
+	app.LastYearAverage("AAPL", "GBP")
 	// app.SimulateDiceRolls(10000)
-	app.CalculateSMA(30, "AAPL")
+	// app.CalculateSMA(30, "AAPL")
 }

@@ -32,3 +32,10 @@ func (app *application) CalculateSMA(window int, stock string) float64 {
 
 	return sma
 }
+
+// TODO
+// func (app *application) ComputeAutoCorrelationLag1(data HistoricalPriceResponse) {
+
+// 	centralTendencies := app.CalculateStockCentralTendencies(data.Historical)
+
+// }

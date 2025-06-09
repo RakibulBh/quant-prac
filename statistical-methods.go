@@ -11,12 +11,17 @@ func (app *application) CalculateStockCentralTendencies(data []HistoricalRecord)
 	var sum float64
 	var median float64
 	var variance float64
+
 	count := len(data)
-	prices := []float64{}
+	if count == 0 {
+		return &MeasuresOfCentralTendencies{}
+	}
+	prices := make([]float64, 0, count)
 
 	// Mean
 	for _, dataPoint := range data {
 		sum += dataPoint.Close
+		prices = append(prices, dataPoint.Close)
 	}
 	mean = sum / float64(count)
 
@@ -31,8 +36,8 @@ func (app *application) CalculateStockCentralTendencies(data []HistoricalRecord)
 	}
 
 	// Variance
-	for _, dataPoint := range data {
-		deviation := dataPoint.Close - mean
+	for _, price := range prices {
+		deviation := price - mean
 		variance += deviation * deviation
 	}
 	variance /= float64(count - 1)
@@ -40,13 +45,11 @@ func (app *application) CalculateStockCentralTendencies(data []HistoricalRecord)
 	// standard deviation
 	stdDev := math.Sqrt(variance)
 
-	CentralTendencies := MeasuresOfCentralTendencies{
+	return &MeasuresOfCentralTendencies{
 		Mean:              mean,
 		Median:            median,
 		Count:             count,
 		Variance:          variance,
 		StandardDeviation: stdDev,
 	}
-
-	return &CentralTendencies
 }
