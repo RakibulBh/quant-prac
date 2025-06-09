@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"math"
 	"net/http"
-	"sort"
 )
 
 func (app *application) LastYearAverage(stock string, currency string) {
@@ -16,45 +14,12 @@ func (app *application) LastYearAverage(stock string, currency string) {
 		return
 	}
 
-	// data
-	sum := 0.0
-	count := len(stockYearAverageData.Historical)
-	median := 0.0
-	var mean float64
-	var variance float64
-	var sd float64
+	centralTendencies := app.CalculateStockCentralTendencies(stockYearAverageData.Historical)
 
-	// Mean
-	prices := []float64{}
-	for _, data := range stockYearAverageData.Historical {
-		prices = append(prices, data.Close)
-		sum += data.Close
-	}
-	mean = sum / float64(count)
-
-	// Median
-	sort.Float64s(prices)
-	if len(prices)%2 == 0 {
-		mid1 := prices[count/2]
-		mid2 := prices[(count/2)-1]
-		median = (mid1 + mid2) / 2
-	} else {
-		median = prices[count/2]
-	}
-
-	// Variance
-	for _, v := range prices {
-		variance += (v - mean) * (v - mean)
-	}
-	variance /= (float64(count) - 1)
-
-	// Standard deviation
-	sd = math.Sqrt(variance)
-
-	if count > 0 {
-		fmt.Printf("The mean closing price for %s in the last %d days is $%.2f\n", stock, count, sum/float64(count))
-		fmt.Printf("The median closing price for %s in the last %d days is $%.2f\n", stock, count, median)
-		fmt.Printf("The standard deviation of closing prices for %s in the last %d days is $%.2f\n", stock, count, sd)
+	if centralTendencies.Count > 0 {
+		fmt.Printf("The mean closing price for %s in the last %d days is $%.2f\n", stock, centralTendencies.Count, centralTendencies.Mean)
+		fmt.Printf("The median closing price for %s in the last %d days is $%.2f\n", stock, centralTendencies.Count, centralTendencies.Median)
+		fmt.Printf("The standard deviation of closing prices for %s in the last %d days is $%.2f\n", stock, centralTendencies.Count, centralTendencies.StandardDeviation)
 	} else {
 		fmt.Println("No historical data to calculate average.")
 	}
